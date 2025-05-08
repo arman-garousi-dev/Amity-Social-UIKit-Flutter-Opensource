@@ -77,6 +77,8 @@ class AmityUIConfiguration extends ChangeNotifier {
       (userId) => const SizedBox.shrink();
   Widget? Function(String) buildOtherUserProfile =
       (userId) => const SizedBox.shrink();
+  Widget? Function(String, bool) buildAboutTabOnUserProfile =
+      (userId, isCurrentUser) => const SizedBox.shrink();
   bool currentUserImageUrl = false;
   static Future<List<AmityPost>> Function(List<AmityPost>) onCustomPost =
       (posts) async => posts;

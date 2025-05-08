@@ -51,7 +51,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
           amityUser: widget.amityUser, userId: widget.amityUser!.userId!);
       Provider.of<UserFeedVM>(context, listen: false).userFeedTabController =
           TabController(
-        length: 2,
+        length: 3,
         vsync: this,
       );
     } else {
@@ -61,7 +61,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
 
       Provider.of<UserFeedVM>(context, listen: false).userFeedTabController =
           TabController(
-        length: 2,
+        length: 3,
         vsync: this,
       );
     }
@@ -146,6 +146,12 @@ class UserProfileScreenState extends State<UserProfileScreen>
           Consumer<UserFeedVM>(builder: (context, vm, _) {
             return _StickyHeaderList(
               index: 0,
+              userId: isCurrentUser
+                  ? Provider.of<AmityVM>(
+                      context,
+                    ).currentamityUser!.userId!
+                  : Provider.of<UserFeedVM>(context).amityUser!.userId!,
+              isCurrentUser: isCurrentUser,
               profileSectionWidget: Column(
                 children: [
                   Container(
@@ -185,12 +191,13 @@ class UserProfileScreenState extends State<UserProfileScreen>
                               Expanded(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     // Text(vm.amityMyFollowInfo.status
                                     //     .toString()),
-                                    const SizedBox(height: 8,),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
                                     Text(
                                       getAmityUser().displayName ?? "",
                                       style: TextStyle(
@@ -207,8 +214,8 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                     vm.amityMyFollowInfo.id == null
                                         ? const SizedBox()
                                         : StreamBuilder<AmityUserFollowInfo>(
-                                            stream: vm.amityMyFollowInfo
-                                                .listen.stream,
+                                            stream: vm.amityMyFollowInfo.listen
+                                                .stream,
                                             initialData: vm.amityMyFollowInfo,
                                             builder: (context, snapshot) {
                                               return Row(
@@ -224,13 +231,11 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                               ChangeNotifierProvider(
                                                             create: (context) =>
                                                                 FollowerVM(),
-                                                            child:
-                                                                FollowScreen(
+                                                            child: FollowScreen(
                                                               followScreenType:
                                                                   FollowScreenType
                                                                       .following,
-                                                              key:
-                                                                  UniqueKey(),
+                                                              key: UniqueKey(),
                                                               userId: widget
                                                                   .amityUserId,
                                                               displayName:
@@ -254,8 +259,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                                 .appColors
                                                                 .base,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .w700,
+                                                                FontWeight.w700,
                                                             fontSize: 12,
                                                           ),
                                                         ),
@@ -266,8 +270,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                           'following',
                                                           style: TextStyle(
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .w400,
+                                                                FontWeight.w400,
                                                             fontSize: 12,
                                                           ),
                                                         ),
@@ -286,13 +289,11 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                               ChangeNotifierProvider(
                                                             create: (context) =>
                                                                 FollowerVM(),
-                                                            child:
-                                                                FollowScreen(
+                                                            child: FollowScreen(
                                                               followScreenType:
                                                                   FollowScreenType
                                                                       .follower,
-                                                              key:
-                                                                  UniqueKey(),
+                                                              key: UniqueKey(),
                                                               userId: widget
                                                                   .amityUserId,
                                                               displayName:
@@ -316,8 +317,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                                 .appColors
                                                                 .base,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .w700,
+                                                                FontWeight.w700,
                                                             fontSize: 12,
                                                           ),
                                                         ),
@@ -328,8 +328,7 @@ class UserProfileScreenState extends State<UserProfileScreen>
                                                           'followers',
                                                           style: TextStyle(
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .w400,
+                                                                FontWeight.w400,
                                                             fontSize: 12,
                                                           ),
                                                         ),
@@ -606,6 +605,12 @@ class UserProfileScreenState extends State<UserProfileScreen>
             index: 1,
             theme: theme,
             bheight: bheight,
+            isCurrentUser: isCurrentUser,
+            userId: isCurrentUser
+                ? Provider.of<AmityVM>(
+                    context,
+                  ).currentamityUser!.userId!
+                : Provider.of<UserFeedVM>(context).amityUser!.userId!,
           ),
         ],
         amityUser: Provider.of<UserFeedVM>(context).amityUser!,
@@ -657,12 +662,16 @@ class _StickyHeaderList extends StatelessWidget {
     this.profileSectionWidget,
     required this.theme,
     required this.bheight,
+    required this.userId,
+    this.isCurrentUser = false,
   }) : super(key: key);
 
   final int? index;
   final Widget? profileSectionWidget;
   final ThemeData theme;
   final double bheight;
+  final bool isCurrentUser;
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
@@ -798,13 +807,23 @@ class _StickyHeaderList extends StatelessWidget {
                     }
                   }
 
-                  if (vm.userFeedTabController!.index == 0) {
-                    return buildContent(context, bheight);
-                  } else {
-                    return MediaGalleryPage(
-                      galleryFeed: GalleryFeed.user,
-                      onRefresh: () {},
-                    );
+                  switch (vm.userFeedTabController!.index) {
+                    case 0:
+                      return buildContent(context, bheight);
+                    case 1:
+                      return Provider.of<AmityUIConfiguration>(context)
+                              .buildAboutTabOnUserProfile(
+                            userId,
+                            isCurrentUser,
+                          ) ??
+                          const SizedBox.shrink();
+                    case 2:
+                      return MediaGalleryPage(
+                        galleryFeed: GalleryFeed.user,
+                        onRefresh: () {},
+                      );
+                    default:
+                      return buildContent(context, bheight);
                   }
                 },
               );
@@ -988,6 +1007,7 @@ class Header extends StatelessWidget {
                         ),
                         tabs: const [
                           Tab(text: "Timeline"),
+                          Tab(text: "About"),
                           Tab(text: "Gallery"),
                         ],
                       ),
