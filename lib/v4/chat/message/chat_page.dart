@@ -48,6 +48,19 @@ class AmityChatPage extends NewBasePage {
   @override
   Widget buildPage(BuildContext context) {
     final phrase = AmityUIKit4Manager.freedomBehavior.dmPageBehavior.phrase;
+    final onChatPageInit =
+        AmityUIKit4Manager.freedomBehavior.dmPageBehavior.onChatPageInit;
+
+    // Call the onInit callback if provided
+    if (onChatPageInit != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await onChatPageInit(
+          context,
+          channelId,
+          userId,
+        );
+      });
+    }
 
     MessageComposerCache().updateText("");
 
