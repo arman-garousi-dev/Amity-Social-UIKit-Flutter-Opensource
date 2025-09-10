@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:amity_sdk/amity_sdk.dart';
+import 'package:amity_uikit_beta_service/amity_uikit.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -9,7 +10,8 @@ part 'global_story_target_state.dart';
 
 class GlobalStoryTargetBloc extends Bloc<GlobalStoryTargetEvent, GlobalStoryTargetState> {
   late GlobalStoryTargetLiveCollection liveCollection;
-  var selectedType = AmityGlobalStoryTargetsQueryOption.SMART;
+  var selectedType = AmityUIKit4Manager
+      .freedomBehavior.storyGlobalTabComponentBehavior.targetsQueryOption;
   late StreamSubscription<List<AmityStoryTarget>> _subscription;
 
   GlobalStoryTargetBloc() : super(GlobalStoryTargetInitial()) {
