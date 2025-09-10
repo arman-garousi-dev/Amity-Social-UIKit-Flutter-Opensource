@@ -11,6 +11,7 @@ import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post_content_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_post_poll_composer_page_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_social_home_page_behavior.dart';
+import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_story_global_tab_component_behavior.dart';
 import 'package:amity_uikit_beta_service/v4/utils/freedom_behaviors/freedom_view_story_page_behavior.dart';
 
 import 'l10n/localization_behavior.dart';
@@ -40,6 +41,9 @@ class FreedomUIKitBehavior {
 
   FreedomSocialHomePageBehavior socialHomePageBehavior =
       FreedomSocialHomePageBehavior();
+
+  FreedomStoryGlobalTabComponentBehavior storyGlobalTabComponentBehavior =
+      FreedomStoryGlobalTabComponentBehavior();
 
   FreedomViewStoryPageBehavior viewStoryPageBehavior =
       FreedomViewStoryPageBehavior();
