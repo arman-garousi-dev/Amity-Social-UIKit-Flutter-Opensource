@@ -22,6 +22,7 @@ import 'package:amity_uikit_beta_service/v4/social/post_composer_page/post_compo
 import 'package:amity_uikit_beta_service/v4/social/story/target/amity_story_tab_component.dart';
 import 'package:amity_uikit_beta_service/v4/social/story/target/amity_story_tab_component_type.dart';
 import 'package:amity_uikit_beta_service/v4/utils/amity_dialog.dart';
+import 'package:amity_uikit_beta_service/v4/utils/config_provider.dart';
 import 'package:amity_uikit_beta_service/v4/utils/config_provider_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -349,8 +350,11 @@ class AmityCommunityProfilePage extends NewBasePage {
     );
   }
 
-  void showActions(BuildContext context, bool canManageStory,
+  static void showActions(BuildContext context, bool canManageStory,
       AmityCommunity? community, bool isModerator) {
+    final configProvider = context.read<ConfigProvider>();
+    final theme = configProvider.getTheme('community_profile', '');
+
     final postOption = BottomSheetMenuOption(
         title: context.l10n.general_post,
         icon: "assets/Icons/amity_ic_create_post_button.svg",
@@ -359,7 +363,7 @@ class AmityCommunityProfilePage extends NewBasePage {
           Navigator.of(context).pop();
 
           final createOptions = AmityPostComposerOptions.createOptions(
-              targetId: communityId,
+              targetId: community?.communityId,
               community: community,
               targetType: AmityPostTargetType.COMMUNITY);
 
@@ -392,7 +396,7 @@ class AmityCommunityProfilePage extends NewBasePage {
               builder: (BuildContext context) {
                 return CreateStoryConfigProviderWidget(
                   targetType: AmityStoryTargetType.COMMUNITY,
-                  targetId: communityId,
+                  targetId: community!.communityId!,
                   pageId: 'create_story_page',
                 );
               },
@@ -410,7 +414,7 @@ class AmityCommunityProfilePage extends NewBasePage {
           Navigator.of(context).push(MaterialPageRoute(
             fullscreenDialog: true,
             builder: (context) => AmityPollPostComposerPage(
-              targetId: communityId,
+              targetId: community!.communityId!,
               targetType: AmityPostTargetType.COMMUNITY,
               onPopRequested: (shouldPopCaller) {
                 if (shouldPopCaller) {
