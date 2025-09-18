@@ -1,6 +1,6 @@
 part of 'user_profile_bloc.dart';
 
-enum UserProfileTabIndex { feed, image, video ,influence }
+enum UserProfileTabIndex { feed, image, video, influence, about }
 
 class UserProfileState extends Equatable {
   const UserProfileState({
